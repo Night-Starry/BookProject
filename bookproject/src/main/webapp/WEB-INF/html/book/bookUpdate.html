@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body, .box {
+            width: 100%;
+            height: 100%;
+            /*background-color: #E6D4D4;*/
+            background-image: linear-gradient(to right, #E6D4D4, #D88F8F);
+        }
+
+        .left {
+            width: 50%;
+            height: 100%;
+            /*background-color: #D88F8F;*/
+            float: left;
+        }
+
+        #page_info {
+            font-size: 30px;
+            font-weight: bold;
+            width: 100%;
+            height: 8%;
+            color: white;
+        }
+
+        #img {
+            width: 100%;
+            height: 90%;
+        }
+
+        img {
+            position: relative;
+            top: 5%;
+            left: 20%;
+            width: 60%;
+            height: 90%;
+        }
+
+        .right {
+            width: 50%;
+            height: 100%;
+            /*background-color: #abc1ee;*/
+            /*background-color: #D88F8F;*/
+            float: right;
+        }
+
+        form {
+            width: 100%;
+            height: 100%;
+        }
+
+        .msg {
+            width: 100%;
+            height: 9%;
+            font-size: 20px;
+            color: white;
+        }
+
+        .book_msg {
+            font-size: 20px;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .operation {
+            font-size: 20px;
+            color: white;
+            display: inline-block;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 15px;
+            text-align: center;
+            margin-right: 20px;
+            background-color: #fbc2eb;
+        }
+
+        #file_name{
+            margin-top: 2px;
+            width: 100%;
+            height: 40%;
+            font-size: 15px;
+            text-align: left;
+            color: #afd1ee;
+        }
+
+        .tip {
+            color: red;
+            font-size: small;
+        }
+
+        #book_img_path{
+            font-size: 1px;
+            height: 1%;
+        }
+    </style>
+
+</head>
+<body>
+<div class="box">
+    <div class="left">
+        <div id="page_info">修改书籍信息</div>
+        <div id="img">
+            <img src="" id="book_img" alt="书籍图片">
+        </div>
+    </div>
+
+    <div class="right">
+        <form onsubmit="return false">
+            <!--设置两个储存信息但不展示的input框-->
+            <input type="text" name="action" value="updateBook" style="display: none">
+            <input type="text" name="img" value="/WEB-INF/static/img/book/default.png" id="book_img_path" style="visibility: hidden">
+            <div class="msg"></div>
+            <div class="msg" id="name">
+                <label class="book_msg">书籍名称: </label>
+                <input name="name" id="book_name" value="***">
+                <label class="tip" id="name_tip" style="visibility:hidden">书籍名称不能为空</label>
+            </div>
+            <div class="msg" id="isbn">
+                <label class="book_msg">ISBN: </label>
+                <label id="book_isbn">00000000</label>
+            </div>
+            <div class="msg" id="author">
+                <label class="book_msg">书籍作者: </label>
+                <input name="author" id="book_author" value="***">
+                <label class="tip" id="author_tip" style="visibility:hidden">作者名称不能为空</label>
+            </div>
+            <div class="msg" id="version">
+                <label class="book_msg">书籍版本: </label>
+                <input name="version" id="book_version" value="第1版">
+                <label class="tip" id="version_tip" style="visibility:hidden">版本格式只能为“第+数字+版”</label>
+            </div>
+            <div class="msg" id="price">
+                <label class="book_msg">书籍价格: </label>
+                <input name="price" id="book_price" value="0.00">
+                <label class="tip" id="price_tip" style="visibility:hidden">价格不能小于0</label>
+            </div>
+            <div class="msg" id="stock">
+                <label class="book_msg">书籍库存: </label>
+                <input name="stock" id="book_stock" value="0">
+                <label class="tip" id="stock_tip" style="visibility:hidden">库存不能小于0，并且应为整数</label>
+            </div>
+            <div class="msg" id="sale">
+                <label class="book_msg">书籍销量: </label>
+                <input name="sale" id="book_sale" value="0">
+                <label class="tip" id="sale_tip" style="visibility:hidden">销量不能小于0，并且应为整数</label>
+            </div>
+            <div class="msg" id="upload_img">
+                <label class="operation" id="load_file"> 修改图书封面</label>
+                <label class="tip" id="img_tip" style="visibility:hidden">封面图片只能是png/jpg/jpeg</label>
+                <input type="file" name="file" id="img_upload" accept=".png, .jpg, .jpeg" style="display: none;">
+                <div id="file_name"> </div>
+            </div>
+            <div class="msg">
+                <input class="operation" type="submit" id="confirm" value="确认修改" style="border: 0">
+                <label class="operation" id="back"> 返回</label>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    function check_update_form() {
+        var name = $("#book_name").val();
+        if (String(name).trim().length <= 0) {
+            $("#name_tip").attr("style", "visibility:visible")
+            return false;
+        }
+        var author = $("#book_author").val();
+        if (String(author).trim().length <= 0) {
+            $("#author_tip").attr("style", "visibility:visible")
+            return false;
+        }
+        var versionRegex = /第(\d+)版/;
+        if (!versionRegex.test($("#book_version").val())) {
+            $("#version_tip").attr("style", "visibility:visible")
+            return false;
+        }
+        var price = $("#book_price").val();
+        price = Number(price)
+        if (price < 0) {
+            $("#price_tip").attr("style", "visibility:visible")
+            return false;
+        }
+        var stock = $("#book_stock").val();
+        stock = Number(stock);
+        if (stock < 0 || !Number.isInteger(stock)) {
+            $("#stock_tip").attr("style", "visibility:visible")
+            return false;
+        }
+        var sale = $("#book_sale").val();
+        sale = Number(sale);
+        if (sale < 0 || !Number.isInteger(sale)) {
+            $("#sale_tip").attr("style", "visibility:visible")
+            return false;
+        }
+        //验证图片格式
+        var file = $("#img_upload").val();
+        if (file !== undefined && file !== null && file !== "") {
+            var list = file.split('.');
+            var fileExt = list[list.length - 1];
+            if(fileExt !== "png" && fileExt !== "jpg" && fileExt !== "jpeg"){
+                $("#img_tip").attr("style", "visibility:visible");
+                $("#file_name").text("当前上传文件: " + file);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+
+    //发起请求获取书籍信息并修改
+    $.getJSON(
+        "/book",
+        "action=getSpecificBook",
+        function (data) {
+            $("#book_name").attr("value", data.name);
+            $("#book_price").attr("value", data.price);
+            $("#book_stock").attr("value", data.stock);
+            $("#book_version").attr("value", data.version);
+            $("#book_sale").attr("value", data.sale);
+            $("#book_author").attr("value", data.author);
+            $("#book_isbn").text(data.isbn);
+            $("#book_img_path").attr("value", data.img);
+            $("#book_img").attr("src", "/img?img_file=" + data.img + "&" + Math.random());
+            $("#book_img").attr("path", data.img);
+        }
+    )
+
+    //绑定事件
+    $(document).ready(function () {
+        //设置点击事件
+        $("#back").click(function () {
+            self.location.href = '/bookManage';
+        });
+        $("#load_file").click(function () {
+            // var old_file = $("#img_upload").val();
+            $("#img_tip").attr("style", "visibility:hidden")
+            $("#img_upload").click();
+        });
+        
+        //确认并提交
+        $("#confirm").click(function () {
+            //获取数据
+            let data = new FormData();
+            data.append("action", "updateBook");
+            data.append("name", $("#book_name").val());
+            data.append("version", $("#book_version").val());
+            data.append("price", $("#book_price").val());
+            data.append("stock", $("#book_stock").val());
+            data.append("sale", $("#book_sale").val());
+            data.append("author", $("#book_author").val());
+            data.append("isbn", $("#book_isbn").text());
+            data.append("img", $("#book_img").attr("path"));
+            data.append("img_file", $("#img_upload")[0].files[0]);
+            // $.post(
+            //     "/book",
+            //     $("form").serialize() + "&isbn=" + $("#book_isbn").text(),
+            //     function (data) {
+            //         if(data === "success") {
+            //             alert("修改成功");
+            //         }else {
+            //             alert("修改失败");
+            //         }
+            //     },
+            //     "text",
+            // );
+            $.ajax({
+                    type: "post",
+                    url: "/updateBook",
+                    data:data ,//上一步的FormData
+                    cache: false,//不缓存数据
+                    processData: false,//不转换数据
+                    contentType: false,
+                    dataType: "text",
+                    success: function (data) {
+                        if(data === "success") {
+                            alert("修改成功");
+                            $("#book_img").attr("src", "/img?img_file=" + $("#book_img").attr("path") + "&" + Math.random());
+                        }else {
+                            alert("修改失败");
+                        }
+                    }
+                });
+
+        });
+
+        //设置鼠标样式
+        $(".operation").mouseenter(function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+        //设置提示信息消失
+        $("#book_name").click(function () {
+            $("#name_tip").attr("style", "visibility:hidden")
+        });
+        $("#book_author").click(function () {
+            $("#author_tip").attr("style", "visibility:hidden")
+        });
+        $("#book_price").click(function () {
+            $("#price_tip").attr("style", "visibility:hidden")
+        });
+        $("#book_sale").click(function () {
+            $("#sale_tip").attr("style", "visibility:hidden")
+        });
+        $("#book_stock").click(function () {
+            $("#stock_tip").attr("style", "visibility:hidden")
+        });
+        $("#book_version").click(function () {
+            $("#version_tip").attr("style", "visibility:hidden")
+        });
+    });
+</script>
+
+</body>
+</html>

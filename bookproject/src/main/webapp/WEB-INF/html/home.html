@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>书城</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="icon" href="/img?img_file=/WEB-INF/static/img/icon.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body{
+            height: 100%;
+        }
+
+        .box{
+            height: 100%;
+            width: 100%;
+        }
+
+        .header{
+            width: 100%;
+            height: 10%;
+            /*background-image: linear-gradient(#ECCACA, #E6D4D4);*/
+        }
+
+        .welcome{
+            float: left;
+            width: 20%;
+            height: 100%;
+        }
+
+        #img{
+            width: 40%;
+            height: 100%;
+            float: left;
+        }
+
+        #word{
+            width: 60%;
+            height: 100%;
+            font-size: 30px;
+            font-weight: bold;
+            color: #D88F8F;
+            line-height: 200%;
+            float: left;
+        }
+
+        .user{
+            float: right;
+            width: 20%;
+            height: 100%;
+        }
+        .user > div{
+            display: inline-block;
+        }
+        #user_name{
+            font-size: 30px;
+            font-weight: bold;
+            line-height: 200%;
+            color: #D88F8F;
+            width: 40%;
+            text-align: right;
+            float: left;
+            margin-right: 5%;
+        }
+        #head_img{
+            width: 25%;
+            height: 100%;
+            float: left;
+        }
+        /*#head_img > img{*/
+        /*    width: 100%;*/
+        /*    height: 100%;*/
+        /*}*/
+        .operation{
+            width: 30%;
+            height: 100%;
+        }
+        .operation > div{
+            height: 40%;
+            text-align: center;
+            color: white;
+            background-color: #EB9595;
+            font-size: 20px;
+            font-weight: bold;
+            border: 3px solid;
+            border-radius: 5px;
+        }
+
+        .left_box{
+            width: 20%;
+            height: 90%;
+            background-color: #ECCACA;
+            float: left;
+        }
+
+        .navigation{
+            width: 100%;
+            height: 95%;
+            color: white;
+            font-size: 25px;
+            text-align: center;
+            background-color: #ECCACA;
+        }
+
+        .modal{
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #EB9595;
+            border-top: 2px solid;
+        }
+
+        .func{
+            padding-top: 5px;
+            padding-bottom: 5px;
+            font-size: 15px;
+            background-color: #EEB1B1;
+            border-top: 1px solid;
+        }
+
+        .bottom{
+            width: 100%;
+            height: 5%;
+            text-align: center;
+        }
+
+        a{
+            text-decoration-line: none;
+        }
+        a:link{
+            color: #abc1ee;
+        }
+        a:hover{
+            color: #abc1ee;
+        }
+
+        #author{
+            color: black;
+            font-size: small;
+            text-align: center;
+        }
+
+        .main{
+            width: 80%;
+            height: 90%;
+            background-color: #E6D4D4;
+            float: right;
+        }
+
+    </style>
+</head>
+
+
+<body style="overflow: hidden">
+    <div class="box">
+        <!--头部-->
+        <header class="header">
+            <div class="welcome">
+                <div id="img">
+                    <img src="/img/logo" id="logo" height="100%" width="auto" alt="logo">
+                </div>
+                <div id="word">
+                    阅人书店
+                </div>
+            </div>
+            <div class="user">
+                <div id="user_name">***</div>
+                <div id="head_img">
+                    <img src="/img?img_file=WEB-INF/static/img/head.png" alt="头像" height="100%" width="auto">
+                </div>
+                <div class="operation" style="visibility: hidden">
+                    <div id="logout">退出</div>
+                    <div id="signOut">注销</div>
+                </div>
+            </div>
+        </header>
+
+        <!--左部侧边栏-->
+        <div class="left_box">
+            <!--导航条-->
+            <div class="navigation">
+                <div class="modal" id="homepage" style="border-top: 0">
+                    首页
+                </div>
+                <div class="modal" id="books" type="hide">
+                    书籍
+                </div>
+                <div class="func" id="book_list">
+                    书籍列表
+                </div>
+                <div class="func" id="book_manage">
+                    书籍管理
+                </div>
+                <div class="func" id="buy">
+                    购物车
+                </div>
+                <div class="modal" id="user" type="hide">
+                    用户
+                </div>
+                <div class="func" id="user_manage">
+                    用户管理
+                </div>
+                <div class="modal" id="order" type="hide">
+                    订单
+                </div>
+                <div class="func" id="order_manage">
+                    订单管理
+                </div>
+                <div class="func" id="order_list">
+                    订单列表
+                </div>
+            </div>
+
+            <!--底部-->
+            <div class="bottom">
+                <div id="author">
+                    联系开发:
+                    <a href="mailto:3384360495@qq.com">3384360495@qq.com</a>
+                </div>
+            </div>
+        </div>
+
+        <!--主页面-->
+        <div class="main">
+            <iframe src="/welcome" width="100%" height="100%" frameborder="0" id="frame"></iframe>
+        </div>
+
+    </div>
+
+
+<script>
+    let is_admin = true;
+
+    //获取
+    $.post(
+        "/user",
+        "action=get_user_name",
+        function (data) {
+            $("#user_name").text(data);
+            if(data !== "admin"){
+                is_admin = false;
+                $("#book_manage").attr("style", "display: none");
+                $("#user").attr("style", "display: none");
+            }
+        },
+        "text"
+    );
+
+
+    $(document).ready(function(){
+        // 隐藏元素
+        $(".func").hide();
+
+        //用户信息部分
+        $("#head_img").mouseenter(function () {
+            $(".operation").attr("style", "visibility: visible");
+            setTimeout(function () {
+                $(".operation").attr("style", "visibility: hidden");
+            }, 3000);
+        });
+        $("#logout").click(function () {
+            //返回到登录界面，发送请求给服务器销毁session和cookie
+            $.post(
+                "/user",
+                {action: "logout", name: $("#user_name").text()},
+                function () {
+                    window.location.href = "/login";
+                }
+            );
+        });
+        $("#signOut").click(function () {
+            //注销账号，返回到登录界面，发送请求给服务器销毁用户信息
+            $.post(
+                "/user",
+                {action: "signOut", name: $("#user_name").text()},
+                function () {
+                    window.location.href = "/login";
+                }
+            );
+        });
+
+
+        // 导航条部分设置点击事件
+        $("#homepage").click(function (){
+            $("#frame").attr("src", "/welcome");
+        });
+
+        $("#books").click(function () {
+            if($("#books").attr("type") === "hide"){
+                $("#book_list").slideDown();
+                if(is_admin){
+                    $("#book_manage").slideDown();
+                }
+                $("#buy").slideDown();
+                $("#books").attr("type", "show");
+            }else {
+                $("#book_list").slideUp();
+                if(is_admin){
+                    $("#book_manage").slideUp();
+                }
+                $("#buy").slideUp();
+                $("#books").attr("type", "hide");
+            }
+        });
+
+        $("#user").click(function () {
+            if($("#user").attr("type") === "hide"){
+                $("#user_list").slideDown();
+                if(is_admin){
+                    $("#user_manage").slideDown();
+                }
+                $("#user").attr("type", "show");
+            }else {
+                $("#user_list").slideUp();
+                if(is_admin){
+                    $("#user_manage").slideUp();
+                }
+                $("#user").attr("type", "hide");
+            }
+        });
+
+        $("#order").click(function () {
+            if($("#order").attr("type") === "hide"){
+                $("#order_list").slideDown();
+                if(is_admin){
+                    $("#order_manage").slideDown();
+                }
+                $("#order").attr("type", "show");
+            }else {
+                $("#order_list").slideUp();
+                if(is_admin){
+                    $("#order_manage").slideUp();
+                }
+                $("#order").attr("type", "hide");
+            }
+        });
+        
+        $("#book_list").click(function () {
+            $("#frame").attr("src", "/bookList");
+        });
+
+        $("#book_manage").click(function () {
+            $("#frame").attr("src", "/bookManage");
+        });
+
+        $("#buy").click(function () {
+            $("#frame").attr("src", "/shoppingCart");
+        });
+
+
+        $("#user_manage").click(function () {
+            $("#frame").attr("src", "/userManage");
+        });
+
+        $("#order_list").click(function () {
+            $("#frame").attr("src", "/orderList");
+        });
+        $("#order_manage").click(function () {
+            $("#frame").attr("src", "/orderManage");
+        });
+
+        //设置鼠标变化
+        $(".modal, .func, .operation").mouseenter(function(){
+            $(this).css('cursor', 'pointer');
+        });
+    });
+</script>
+
+</body>
+</html>

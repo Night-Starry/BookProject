@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html, body, .box{
+            width: 100%;
+            height: 100%;
+            /*background-color: #E6D4D4;*/
+            background-image: linear-gradient(to right, #E6D4D4, #D88F8F);
+        }
+
+        .left{
+            width: 50%;
+            height: 100%;
+            /*background-color: #D88F8F;*/
+            float: left;
+        }
+        #page_info{
+            font-size: 30px;
+            font-weight: bold;
+            width: 100%;
+            height: 8%;
+            color: white;
+        }
+        #img{
+            width: 100%;
+            height: 90%;
+        }
+        img{
+            position: relative;
+            top: 5%;
+            left: 20%;
+            width: 60%;
+            height: 90%;
+        }
+
+        .right{
+            width: 50%;
+            height: 100%;
+            /*background-color: #abc1ee;*/
+            /*background-color: #D88F8F;*/
+            float: right;
+        }
+
+        .msg{
+            width: 100%;
+            height: 10%;
+            font-size: 20px;
+            color: white;
+        }
+        .book_msg{
+            font-size: 20px;
+            font-weight: bold;
+            font-style: italic;
+        }
+        .operation{
+            display: inline-block;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 15px;
+            text-align: center;
+            margin-right: 20px;
+            background-color: #fbc2eb;
+        }
+    </style>
+
+</head>
+<body>
+<div class="box">
+    <div class="left">
+        <div id="page_info">书籍详细信息</div>
+        <div id="img">
+            <img src="" id="book_img" alt="书籍图片">
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="msg"></div>
+        <div class="msg" id="name">
+            <label class="book_msg">书籍名称: </label>
+            <label id="book_name">***</label>
+        </div>
+        <div class="msg" id="isbn">
+            <label class="book_msg">ISBN: </label>
+            <label id="book_isbn">00000000</label>
+        </div>
+        <div class="msg" id="author">
+            <label class="book_msg">书籍作者: </label>
+            <label id="book_author">***</label>
+        </div>
+        <div class="msg" id="version">
+            <label class="book_msg">书籍版本: </label>
+            <label id="book_version">第一版</label>
+        </div>
+        <div class="msg" id="price">
+            <label class="book_msg">书籍价格: </label>
+            <label id="book_price">0.00</label>
+        </div>
+        <div class="msg" id="stock">
+            <label class="book_msg">书籍库存: </label>
+            <label id="book_stock">0</label>
+        </div>
+        <div class="msg" id="sale">
+            <label class="book_msg">书籍销量: </label>
+            <label id="book_sale">0</label>
+        </div>
+        <div class="msg">
+            <span class="operation" id="add_to_cart"> 加入购物车</span>
+            <span class="operation" id="back_list">返回列表</span>
+            <span class="operation" id="back_cart">返回购物车</span>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    //发起请求获取书籍信息并修改
+    $.getJSON(
+        "/book",
+        "action=getSpecificBook",
+        function (data) {
+            $("#book_img").attr("src", "/img?img_file=" + data.img + "&" + Math.random());
+            $("#book_name").text(data.name);
+            $("#book_isbn").text(data.isbn);
+            $("#book_author").text(data.author);
+            $("#book_price").text(data.price);
+            $("#book_stock").text(data.stock);
+            $("#book_version").text(data.version);
+            $("#book_sale").text(data.sale);
+        }
+    );
+    
+    //绑定事件
+    $(document).ready(function () {
+        $("#add_to_cart").click(function () {
+            //发送请求
+            $.post(
+                "/cart",
+                "action=add_to_cart&user_name=admin",
+                function (data) {
+                    if(data === "success"){
+                        alert("已成功添加至购物车");
+                    } else if(data === "already"){
+                        alert("该书籍已经在购物车中");
+                    } else {
+                        alert("添加失败");
+                    }
+                },
+                "text"
+            );
+        });
+        $("#back_list").click(function () {
+            self.location.href='/bookList';
+        });
+        $("#back_cart").click(function () {
+            self.location.href='/shoppingCart';
+        });
+
+        $(".operation").mouseenter(function (){
+            $(this).css('cursor', 'pointer');
+        });
+    });
+</script>
+
+</body>
+</html>

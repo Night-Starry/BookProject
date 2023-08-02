@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body, .box {
+            height: 100%;
+            width: 100%;
+            background-color: #E6D4D4;;
+        }
+
+        .search {
+            text-align: center;
+            width: 100%;
+            height: 10%;
+            font-size: 20px;
+            color: white;
+            line-height: 250%;
+        }
+
+        .input {
+            height: 100%;
+            display: inline-block;
+        }
+
+
+        #search {
+            height: 60%;
+            line-height: 180%;
+            border: 3px solid white;
+            padding: 0 5px;
+            margin-left: 10%;
+            border-radius: 15px;
+        }
+
+
+        .list {
+            position: relative;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            overflow: auto;
+            background-color: #ddc7c6;
+        }
+
+        .attribute {
+            position: relative;
+            left: 10%;
+            background-color: #EB9595;
+            width: 80%;
+            height: 8%;
+            line-height: 250%;
+            color: white;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .attribute > label, .list > .user > label {
+            display: inline-block;
+            height: 100%;
+            width: 24%;
+            text-align: center;
+        }
+
+        .user {
+            width: 100%;
+            height: 10%;
+            color: white;
+            font-size: 15px;
+            line-height: 300%;
+        }
+
+        .user:nth-child(odd){
+            background-color: #ebaba8;
+        }
+        .user:nth-child(even){
+            background-color: #e4c5c3;
+        }
+
+        .list > .user > label:last-child{
+            margin-left: 2%;
+        }
+
+        .list > .user > label > label{
+            border: 3px solid white;
+            border-radius: 15px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="box">
+    <!--查询-->
+    <div class="search">
+        <div id="u_name" class="input">
+            用户名:
+            <input type="text" id="input_name" name="name">
+        </div>
+        <div id="search" class="input">
+            查询
+        </div>
+    </div>
+
+    <!--列表-->
+    <div class="attribute">
+        <label id="name">用户名</label>
+        <label id="password">密码</label>
+        <label id="email">邮箱</label>
+        <label id="operation">操作</label>
+    </div>
+    <div class="list">
+<!--        <div class="user">-->
+<!--            <label>user1</label>-->
+<!--            <label>password1</label>-->
+<!--            <label>-->
+<!--                <label class="delete">-->
+<!--                    删除-->
+<!--                </label>-->
+<!--            </label>-->
+<!--        </div>-->
+<!--        <div class="user">-->
+<!--            <label>user1</label>-->
+<!--            <label>password1</label>-->
+<!--            <label>-->
+<!--                <label class="delete">-->
+<!--                    删除-->
+<!--                </label>-->
+<!--            </label>-->
+<!--        </div>-->
+    </div>
+
+</div>
+
+<script>
+
+    function show_data(data) {
+        //清空数据
+        $(".list").empty();
+
+        //加载数据
+        for(let i = 0; i < data.length; i++){
+            let $user = $("<div class='user'></div>");
+            let $user_name = $("<label>" + data[i].name + "</label>");
+            let $user_password = $("<label>" + data[i].password + "</label>");
+            let $user_email = $("<label>" + data[i].email + "</label>");
+            let $label = $("<label></label>");
+            let $delete = $("<label class='delete'>删除</label>");
+            $label.append($delete);
+            $user.append($user_name);
+            $user.append($user_password);
+            $user.append($user_email);
+            $user.append($label);
+            $(".list").append($user);
+        }
+
+    }
+
+    //发起请求，获取数据
+    $.getJSON(
+        "/user",
+        "action=search_user",
+        function (data) {
+            show_data(data);
+        }
+    );
+
+    //绑定事件
+    $(document).ready(function () {
+        $("#search, .user > label > label").mouseenter(function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+        $("#search").click(function () {
+            let name = $("#input_name").val();
+            //发送请求并更新
+            $.getJSON(
+                "/user",
+                "action=search_user&name=" + name,
+                function (data) {
+                    show_data(data);
+                }
+            );
+        });
+
+        $(document).on("click", ".delete", function () {
+            //获取信息
+            let $parent = $(this).parent().parent();
+            let name = $parent.find("label").first().text();
+            //发送请求
+            $.post(
+                "user",
+                {
+                    "action": "del_user",
+                    "name": name
+                },
+                function () {
+                    //更新信息
+                    $parent.remove();
+                }
+            );
+
+
+        });
+        $(document).on("mouseenter", ".delete", function () {
+            $(this).css('cursor', 'pointer');
+        });
+    });
+
+</script>
+
+</body>
+</html>

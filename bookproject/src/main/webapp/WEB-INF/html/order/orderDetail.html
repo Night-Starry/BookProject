@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body, .box {
+            height: 100%;
+            width: 100%;
+            background-color: #e4c5c3;
+        }
+
+        .order_msg{
+            position: relative;
+            left: 20%;
+            top: 5%;
+            width: 60%;
+            height: 80%;
+            overflow: auto;
+            background-color: #D88F8F;
+            background-image: linear-gradient(to right, #D88F8F, #e4c5c3);
+            font-size: 25px;
+            color: white;
+        }
+        #back{
+            position: relative;
+            left: 44%;
+            top: 7%;
+            width: 10%;
+            height: 10%;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            line-height: 300%;
+            border-radius: 15px;
+            border: 3px solid white;
+            background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="box">
+    <div class="order_msg">
+        <div>
+            <label>订单编号: </label><label id="seq"></label>
+        </div>
+        <div>
+            <label>客户: </label><label id="user"></label>
+        </div>
+        <div>
+            <label>时间: </label><label id="time"></label>
+        </div>
+        <div class="goods">
+            商品信息
+            <!--                <div>-->
+            <!--                    <label>图书isbn: </label><label id="b_isbn"></label>-->
+            <!--                </div>-->
+            <!--                <div>-->
+            <!--                    <label>单价: </label><label id="b_price"></label>-->
+            <!--                </div>-->
+            <!--                <div>-->
+            <!--                    <label>数量: </label><label id="number"></label>-->
+            <!--                </div>-->
+        </div>
+        <div>
+            <label>合计: ￥</label><label id="all"></label>
+        </div>
+    </div>
+
+    <div id="back">
+        返回
+    </div>
+</div>
+
+<script>
+    //获取数据
+    $.getJSON(
+        "/order",
+        "action=get_specific_order",
+        function (data) {
+            $("#seq").text(data.id);
+            $("#user").text(data.name);
+            $("#time").text(data.time);
+
+            let $goods = $(".goods");
+            for(let i = 0; i < data.all_goods.length; i++){
+                let $div1 = $("<div></div>");
+                let $div2 = $("<div></div>");
+                let $div3 = $("<div></div>");
+                $div1.append("<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图书isbn: </label>");
+                let $isbn = $("<label id=\"b_isbn\">" + data.all_goods[i].isbn + "</label>");
+                $div1.append($isbn);
+                $div2.append("<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单价: </label>");
+                let $price = $("<label id=\"b_price\">" + data.all_goods[i].price + "</label>");
+                $div2.append($price);
+                $div3.append("<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量: </label>");
+                let $num = $("<label id=\"b_num\">" + data.all_goods[i].num + "</label>");
+                $div3.append($num);
+
+                $goods.append($div1);
+                $goods.append($div2);
+                $goods.append($div3);
+            }
+            $("#all").text(data.total);
+        }
+    );
+
+    $(document).ready(function () {
+        $("#back").click(function () {
+            self.location.href = "/orderList";
+        });
+
+    });
+</script>
+
+</body>
+</html>

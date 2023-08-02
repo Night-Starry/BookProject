@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body, .box {
+            height: 100%;
+            width: 100%;
+            background-color: #E6D4D4;;
+        }
+
+        .search {
+            text-align: center;
+            width: 100%;
+            height: 10%;
+            font-size: 20px;
+            color: white;
+            line-height: 250%;
+        }
+
+        .input {
+            height: 100%;
+            display: inline-block;
+        }
+
+
+        #search, #add_book{
+            height: 60%;
+            line-height: 180%;
+            border: 3px solid white;
+            padding: 0 5px;
+            margin-left: 7%;
+            border-radius: 15px;
+        }
+
+
+        .list {
+            position: relative;
+            left: 2%;
+            width: 96%;
+            height: 80%;
+            overflow: auto;
+            background-color: #ddc7c6;
+        }
+
+        .attribute {
+            position: relative;
+            left: 2%;
+            background-color: #EB9595;
+            width: 96%;
+            height: 8%;
+            line-height: 250%;
+            color: white;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .attribute > label, .list > .book > label {
+            display: inline-block;
+            height: 100%;
+            width: 11%;
+            text-align: center;
+        }
+        .attribute > #name, .list > .book > label:nth-child(2) {
+            display: inline-block;
+            height: 100%;
+            width: 18%;
+            text-align: center;
+        }
+
+
+        .book {
+            width: 100%;
+            height: 10%;
+            color: white;
+            font-size: 7px;
+            line-height: 300%;
+        }
+
+        .book:nth-child(odd){
+            background-color: #ebaba8;
+        }
+        .book:nth-child(even){
+            background-color: #e4c5c3;
+        }
+
+        .list > .book > label{
+            margin-left: 0.5%;
+        }
+
+        .list > .book > label > label{
+            border: 3px solid white;
+            border-radius: 15px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="box">
+    <!--查询-->
+    <form class="search">
+        <div id="s_isbn" class="input">
+            ISBN:
+            <input type="text" id="input_isbn" name="isbn">
+        </div>
+        <div id="s_name" class="input">
+            书名:
+            <input type="text" id="input_name" name="name">
+        </div>
+        <div id="s_author" class="input">
+            作者:
+            <input type="text" id="input_author" name="author">
+        </div>
+        <input type="text"  name="action" value="selectBook" style="display: none">
+        <div id="search" class="input">
+            查询
+        </div>
+        <div id="add_book" class="input">
+            添加
+        </div>
+    </form>
+
+    <!--列表-->
+    <div class="attribute">
+        <label id="isbn">ISBN</label>
+        <label id="name">书名</label>
+        <label id="author">作者</label>
+        <label id="version">版本</label>
+        <label id="price">价格</label>
+        <label id="stock">库存</label>
+        <label id="sale">销量</label>
+        <label id="operation">操作</label>
+    </div>
+    <div class="list">
+<!--        <div class="book">-->
+<!--            <label>0000000000</label>-->
+<!--            <label>时间简史</label>-->
+<!--            <label>霍金</label>-->
+<!--            <label>第一版</label>-->
+<!--            <label>19.99</label>-->
+<!--            <label>5</label>-->
+<!--            <label>2</label>-->
+<!--            <label>-->
+<!--                <label class="update">-->
+<!--                    修改-->
+<!--                </label>-->
+<!--                <label class="delete">-->
+<!--                    删除-->
+<!--                </label>-->
+<!--            </label>-->
+<!--        </div>-->
+<!--        <div class="book">-->
+<!--            <label>0000000000</label>-->
+<!--            <label>时间简史</label>-->
+<!--            <label>霍金</label>-->
+<!--            <label>第一版</label>-->
+<!--            <label>19.99</label>-->
+<!--            <label>5</label>-->
+<!--            <label>2</label>-->
+<!--            <label>-->
+<!--                <label class="update">-->
+<!--                    修改-->
+<!--                </label>-->
+<!--                <label class="delete">-->
+<!--                    删除-->
+<!--                </label>-->
+<!--            </label>-->
+<!--        </div>-->
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //未来更新和删除标签元素绑定点击事件的函数
+    function update() {
+        //获取信息
+        var isbn = $(this).parent().parent().find("label").first().text();
+        //发送请求
+        $.post(
+            "/book",
+            "action=set_isbn&isbn=" + isbn
+        );
+
+        //跳转页面
+        self.location.href = "/bookUpdate";
+    }
+
+    function delete_book(){
+        //获取信息
+        var book = $(this).parent().parent();
+        let isbn = book.find("label").first().text()
+        //发送请求
+        $.post(
+            "/book",
+            "action=del_book&isbn=" + isbn,
+            function (data) {
+                if(data === "success"){
+                    alert("删除成功");
+                }else {
+                    alert("删除失败");
+                    return;
+                }
+            },
+            "text"
+        );
+        //更新信息
+        book.remove();
+    }
+
+    function show_data(data) {
+        let book_list = data;
+        for(let i = 0; i < book_list.length; i++){
+            let $book = $("<div class='book'></div>");
+            let $isbn = $("<label>" + book_list[i].isbn + "</label>");
+            let $name = $("<label>" + book_list[i].name + "</label>");
+            let $author = $("<label>" + book_list[i].author + "</label>");
+            let $version = $("<label>" + book_list[i].version + "</label>");
+            let $price = $("<label>" + book_list[i].price + "</label>");
+            let $stock = $("<label>" + book_list[i].stock + "</label>");
+            let $sale = $("<label>" + book_list[i].sale + "</label>");
+            let $label = $("<label></label>");
+            let $update = $("<label class='update'>修改</label>")
+            let $delete = $("<label class='delete'>删除</label>")
+            $book.append($isbn);
+            $book.append($name);
+            $book.append($author);
+            $book.append($version);
+            $book.append($price);
+            $book.append($stock);
+            $book.append($sale);
+            $label.append($update);
+            $label.append($delete);
+            $book.append($label);
+            $(".list").append($book);
+        }
+    }
+
+    //发起请求，获取数据
+    $.getJSON(
+        "/book",
+        "action=getBookInfo",
+        function (data) {
+            show_data(data);
+        }
+    );
+
+    //绑定事件
+    $(document).ready(function () {
+        $("#search, #add_book, .update, .delete").mouseenter(function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+        $("#search").click(function () {
+
+            //清空原有信息
+            $(".list").empty();
+            //发送请求并更新
+            $.post(
+                "/book",
+                $("form").serialize(),
+                function (data) {
+                    show_data(data);
+                },
+                "json"
+            );
+        });
+        $("#add_book").click(function () {
+            //跳转页面
+            self.location.href = "/bookAdd";
+        });
+
+        //给未来元素绑定点击事件
+        $(document).on("click", ".update", update);
+        $(document).on("click", ".delete", delete_book);
+        $(document).on("mouseenter", ".update, .delete", function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

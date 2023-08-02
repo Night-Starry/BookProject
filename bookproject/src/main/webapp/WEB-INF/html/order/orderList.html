@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body, .box {
+            height: 100%;
+            width: 100%;
+            background-color: #E6D4D4;;
+        }
+
+        .search {
+            text-align: center;
+            width: 100%;
+            height: 10%;
+            font-size: 20px;
+            color: white;
+            line-height: 250%;
+        }
+
+        .input {
+            height: 100%;
+            display: inline-block;
+        }
+
+
+        #search {
+            height: 60%;
+            line-height: 180%;
+            border: 3px solid white;
+            padding: 0 5px;
+            margin-left: 10%;
+            border-radius: 15px;
+        }
+
+
+        .list {
+            position: relative;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            overflow: auto;
+            background-color: #ddc7c6;
+        }
+
+        .attribute {
+            position: relative;
+            left: 10%;
+            background-color: #EB9595;
+            width: 80%;
+            height: 8%;
+            line-height: 250%;
+            color: white;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .attribute > label, .list > .order > label {
+            display: inline-block;
+            height: 100%;
+            width: 30%;
+            text-align: center;
+        }
+
+        .order {
+            width: 100%;
+            height: 10%;
+            color: white;
+            font-size: 15px;
+            line-height: 300%;
+        }
+
+        .order:nth-child(odd){
+            background-color: #ebaba8;
+        }
+        .order:nth-child(even){
+            background-color: #e4c5c3;
+        }
+
+        .list > .order > label:last-child{
+            margin-left: 2%;
+        }
+
+        .list > .order > label > label{
+            border: 3px solid white;
+            border-radius: 15px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="box">
+    <!--查询-->
+    <div class="search">
+        <div id="o_id" class="input">
+            订单号:
+            <input type="text" id="input_id" name="id">
+        </div>
+        <div id="search" class="input">
+            查询
+        </div>
+    </div>
+
+    <!--列表-->
+    <div class="attribute">
+        <label id="id">订单号</label>
+        <label id="time">时间</label>
+        <label id="total">总计</label>
+    </div>
+    <div class="list">
+<!--        <div class="order">-->
+<!--            <label>user1</label>-->
+<!--            <label>password1</label>-->
+<!--            <label>100</label>-->
+<!--        </div>-->
+<!--        <div class="order">-->
+<!--            <label>user1</label>-->
+<!--            <label>password1</label>-->
+<!--            <label>100</label>-->
+<!--        </div>-->
+    </div>
+
+</div>
+
+<script>
+
+    function show_data(data) {
+        //清空数据
+        $(".list").empty();
+
+        //加载数据
+        for(let i = 0; i < data.length; i++){
+            let $order = $("<div class='order'></div>");
+            let $order_id = $("<label>" + data[i].id + "</label>");
+            let $order_time = $("<label>" + data[i].time + "</label>");
+            let $order_count = $("<label>" + data[i].total + "</label>");
+            $order.append($order_id);
+            $order.append($order_time);
+            $order.append($order_count);
+            $(".list").append($order);
+        }
+
+    }
+
+    //发起请求，获取数据
+    $.getJSON(
+        "/order",
+        "action=search_order",
+        function (data) {
+            show_data(data);
+        }
+    );
+
+    //绑定事件
+    $(document).ready(function () {
+        $("#search").mouseenter(function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+        $("#search").click(function () {
+            let id = $("#input_id").val();
+            //发送请求并更新
+            $.getJSON(
+                "/order",
+                "action=search_order&id=" + id,
+                function (data) {
+                    show_data(data);
+                }
+            );
+        });
+
+
+        $(document).on("mouseenter", ".order, .order label", function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+        $(document).on("click", ".order", function () {
+            let id = $(this).find(":nth-child(1)").text();
+            $.get(
+                "/order",
+                "action=set_order_id&id=" + id,
+                function (data) {
+                    self.location.href = "/orderDetail";
+                }
+            );
+        });
+        $(document).on("click", ".order label", function () {
+            let id = $(this).parent().find(":nth-child(1)").text();
+            $.get(
+                "/order",
+                "action=set_order_id&id=" + id
+            );
+            self.location.href = "/orderDetail";
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

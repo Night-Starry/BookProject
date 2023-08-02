@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>book</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="icon" href="/img?img_file=/WEB-INF/static/img/icon.png" sizes="16x16">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+        }
+
+        .box {
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        }
+
+        .input_box {
+            height: 588px;
+            width: 358px;
+            background-color: white;
+            position: relative;
+            padding: 0 50px;
+            left: 50%;
+            top: 50%;
+            border-radius: 15px;
+            transform: translate(-50%, -50%);
+        }
+
+        .head {
+            font-size: 38px;
+            font-weight: bold;
+            line-height: 200px;
+            text-align: center;
+        }
+
+        .input {
+            display: block;
+            width: 100%;
+            border: 0;
+            padding: 10px;
+            border-bottom: 1px solid rgb(128, 125, 125);
+            font-size: 15px;
+            outline: none;
+        }
+
+        #submit {
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+            height: 40px;
+            border: 0;
+            font-size: 20px;
+            color: white;
+        }
+
+        .msg {
+            font-size: small;
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .input::placeholder {
+            text-transform: uppercase;
+        }
+
+        #code {
+            width: 50%;
+            border: 0;
+            padding: 10px;
+            border-bottom: 1px solid rgb(128, 125, 125);
+            font-size: 15px;
+            outline: none;
+        }
+
+        .canvas-box {
+            width: 120px;
+            height: 40px;
+            float: right;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        a {
+            text-decoration-line: none;
+            color: #abc1ee;
+        }
+
+        .tip {
+            width: 100%;
+            height: 15px;
+            font-size: 10px;
+            color: red;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="box">
+    <div class="input_box">
+        <div class="head">
+            <h2>Login</h2>
+        </div>
+        <div class="form">
+            <form>
+                <input name="action" value="login" style="display: none">
+                <input type="text" name="name" placeholder="username" class="input" id="name"
+                       onclick="hidden_name_tip()">
+                <div class="tip" id="name_tip" style="visibility:hidden">>用户名由大写、小写字母和数字组成,不能为空</div>
+
+                <input type="password" name="password" placeholder="password" class="input" id="password"
+                       onclick="hidden_password_tip()">
+                <div class="tip" id="password_tip" style="visibility:hidden">>密码由大写、小写字母和数字组成, 6-20位
+                </div>
+
+                <input type="text" placeholder="Verification code" id="code" onclick="hidden_code_tip()">
+                <div class="canvas-box">
+                    <canvas id="canvas" onclick="update_YZM()"></canvas>
+                </div>
+                <div class="tip" id="code_tip" style="visibility:hidden">>验证码不正确</div>
+
+                <input type="button" value="Login" id="submit">
+                <div class="tip" id="login_tip" style="visibility:hidden">>用户名或密码错误</div>
+            </form>
+        </div>
+        <div class="msg">
+            Don't have account? <a href="/register">Sign up</a>
+        </div>
+    </div>
+</div>
+
+<!--生成验证码-->
+<script>
+    var result = "";
+    YZM("#canvas", 120, 40);
+
+    function YZM(selector, wight, height) {
+        // 随机生成数字
+        function rn(min, max) {
+            return parseInt(Math.random() * (max - min) + min);
+        }
+
+        //生成随机颜色
+        function rc(min, max) {
+            const r = rn(min, max);
+            const g = rn(min, max);
+            const b = rn(min, max);
+            return `rgb(${r},${g},${b})`;
+        }
+
+        //填充背景颜色
+        const w = 4 * wight;
+        const h = 4 * height;
+        const canvas = document.querySelector(selector);
+
+        // getContext()方法返回一个用于在画布上绘图的环境
+        //语法：canvas.getContext(contextID)
+        //参数contextID指定了您想要在画布上绘制的类型。当前唯一合法的值是"2d",它指定了二维绘图，并且导致该方法返回一个环境对象，该对象导出一个二维绘图API。
+        // ctx.fillRect(0,0,w,h);
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = rc(180, 230);
+        //fillStyle属性设置或者返回用于填充的颜色、渐变或者模式。
+        ctx.fillRect(0, 0, w, h);
+        //fillRect()方法绘制"已填色"的矩形，默认的填充颜色是黑色。
+        //语法：context.fillRect(x,y,width,height);
+
+        //随机字符串
+        var pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        //取出随机数字
+        for (var i = 0; i < 4; i++) {
+            var c = pool[rn(0, pool.length)];
+            //随机字体大小
+            var fs = rn(60, 100);
+            //随机字母数字的旋转角度
+            var deg = rn(-30, 30);
+            ctx.font = fs + "px Arial";
+            ctx.textBaseline = 'top';
+            //设置字体的填充颜色
+            ctx.fillStyle = rc(80, 150);
+            ctx.save();
+            //save()保存当前的绘图状态
+            ctx.translate(50 * i + 15, 15);
+            ctx.rotate(deg * Math.PI / 180);
+            ctx.fillText(c, 30, 30);
+            //context.fillText(text,x,y,maxWidth)----text是在画布上输出的文本，x和y是坐标，maxWidth是最大文本宽度
+            ctx.restore();
+            //restore()恢复之前保存的绘图状态
+            result += c;
+        }
+
+        //随机生成干扰线
+        for (var i = 0; i < 5; i++) {
+            ctx.beginPath();
+            //beginPath()方法开始一条路径，或者重置当前的路径
+            ctx.moveTo(rn(0, w), rn(0, h));
+            //context.moveTo(x,y)----x是目标位置的x坐标，y是目标位置的y坐标
+            ctx.lineTo(rn(0, w), rn(0, h));
+            //lineTo()方法添加一个新点，然后创建从该点到画布中最后指定点的线条。(该方法并不会创建线条)
+            //context.lineTo(x,y)-----x是目标位置的x坐标，y是目标位置的y坐标
+            ctx.stokeStyle = rc(180, 230);
+            //strokeStyle属性设置或返回用于笔触的颜色、渐变或模式。
+            ctx.closePath();
+            //closePath()闭合路径
+            ctx.stroke();
+            //stroke()方法在画布上绘制确切的路径
+        }
+
+        //随机生成40个小的干扰圆点
+        for (var i = 0; i < 40; i++) {
+            ctx.beginPath();
+            ctx.arc(rn(0, w), rn(0, h), 1, 0, 2 * Math.PI);
+            //arc()方法创建弧/曲线(用于创建圆或者部分圆)
+            ctx.closePath();
+            ctx.fillStyle = rc(150, 200);
+            ctx.fill();
+        }
+    }
+
+    function update_YZM() {
+        result = "";
+        YZM("#canvas", 120, 40);
+    }
+
+    function check_form() {
+        // 检查用户名
+        var name = document.getElementById("name").value;
+        var name_format = /^[A-Za-z0-9]+$/;
+        if (!name_format.test(name)) {
+            var name_tip = document.getElementById("name_tip");
+            name_tip.setAttribute("style", "visibility:visible")
+            update_YZM();
+            return false;
+        }
+        // 检查密码
+        var password = document.getElementById("password").value;
+        var password_format = /^\w{5,16}$/;
+        if (!password_format.test(password)) {
+            var password_tip = document.getElementById("password_tip");
+            password_tip.setAttribute("style", "visibility:visible")
+            update_YZM();
+            return false;
+        }
+        // 检查验证码
+        var code = document.getElementById("code").value;
+        if (code === result) {
+            return true;
+        } else {
+            var code_tip = document.getElementById("code_tip");
+            code_tip.setAttribute("style", "visibility:visible")
+            update_YZM();
+            return false;
+        }
+    }
+
+    function hidden_name_tip() {
+        var name_tip = document.getElementById("name_tip");
+        name_tip.setAttribute("style", "visibility:hidden")
+    }
+
+    function hidden_password_tip() {
+        var password_tip = document.getElementById("password_tip");
+        password_tip.setAttribute("style", "visibility:hidden")
+    }
+
+    function hidden_code_tip() {
+        var code_tip = document.getElementById("code_tip");
+        code_tip.setAttribute("style", "visibility:hidden")
+    }
+
+    $(document).ready(function () {
+        //登录
+        $("#submit").click(function () {
+            $("#login_tip").attr("style", "visibility:hidden");
+            if (check_form()) {
+                $.post(
+                    "/user",
+                    $("form").serialize(),
+                    function (data) {
+                        if (data === "success") {
+                            window.location.replace("/home");
+                        } else {
+                            $("#login_tip").attr("style", "visibility:visible");
+                            YZM();
+                        }
+                    },
+                    "text"
+                );
+            }
+        });
+        $("#submit").mouseenter(function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+    });
+
+</script>
+</body>
+</html>

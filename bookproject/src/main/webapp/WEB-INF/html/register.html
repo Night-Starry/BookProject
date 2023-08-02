@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>book</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="icon" href="/img?img_file=/WEB-INF/static/img/icon.png" sizes="16x16">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+        }
+
+        .box {
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        }
+
+        .input_box {
+            height: 588px;
+            width: 358px;
+            background-color: white;
+            position: relative;
+            padding: 0 50px;
+            left: 50%;
+            top: 50%;
+            border-radius: 15px;
+            transform: translate(-50%, -50%);
+        }
+
+        .head {
+            font-size: 38px;
+            font-weight: bold;
+            line-height: 200px;
+            text-align: center;
+        }
+
+        .input {
+            display: block;
+            width: 100%;
+            /*margin-bottom: 20px;*/
+            border: 0;
+            padding: 10px;
+            border-bottom: 1px solid rgb(128, 125, 125);
+            font-size: 15px;
+            outline: none;
+        }
+
+        #submit {
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+            height: 40px;
+            border: 0;
+            font-size: 20px;
+            color: white;
+        }
+
+        .msg {
+            font-size: small;
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .input::placeholder {
+            text-transform: uppercase;
+        }
+
+        a {
+            text-decoration-line: none;
+            color: #abc1ee;
+        }
+
+        .tip {
+            width: 100%;
+            height: 15px;
+            font-size: 10px;
+            color: red;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<div class="box">
+    <div class="input_box">
+        <div class="head">
+            <h2>Register</h2>
+        </div>
+        <div class="form">
+            <form>
+                <input name="action" value="register" style="display: none">
+                <input type="text" name="name" placeholder="username" class="input" id="name"
+                       onclick="hidden_name_tip()">
+                <div class="tip" id="name_tip" style="visibility:hidden">
+                    >用户名由大写、小写字母和数字组成,不能为空,不能包含admin字段
+                </div>
+
+                <input type="text" name="email" placeholder="email" class="input" id="email"
+                       onclick="hidden_email_tip()">
+                <div class="tip" id="email_tip" style="visibility:hidden">邮箱格式错误</div>
+
+                <input type="password" name="password" placeholder="password" class="input" id="password"
+                       onclick="hidden_password_tip()">
+                <div class="tip" id="password_tip" style="visibility:hidden">>密码由大写、小写字母和数字组成, 6-20位
+                </div>
+
+                <input type="password" placeholder="confirm password" class="input" id="c_password"
+                       onclick="hidden_c_password_tip()">
+                <div class="tip" id="c_password_tip" style="visibility:hidden">密码不一致</div>
+
+                <input type="button" value="Register" id="submit">
+                <div class="tip" id="register_tip" style="visibility:hidden"></div>
+            </form>
+        </div>
+        <div class="msg">
+            Already have account. <a href="http://localhost:8080/login">Login</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function check_form() {
+        // 检查用户名
+        var name = document.getElementById("name").value;
+        var name_format = /^[A-Za-z0-9]+$/;
+        if (!name_format.test(name)) {
+            var name_tip = document.getElementById("name_tip");
+            name_tip.setAttribute("style", "visibility:visible")
+            return false;
+        }
+        if (String(name).indexOf("admin") !== -1) {
+            var name_tip = document.getElementById("name_tip");
+            name_tip.setAttribute("style", "visibility:visible")
+            return false;
+        }
+        // 检查邮箱
+        var email = document.getElementById("email").value;
+        var email_format = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (!email_format.test(email)) {
+            var email_tip = document.getElementById("email_tip");
+            email_tip.setAttribute("style", "visibility:visible")
+            return false;
+        }
+        // 检查密码
+        var password = document.getElementById("password").value;
+        var password_format = /^\w{5,16}$/;
+        if (!password_format.test(password)) {
+            var password_tip = document.getElementById("password_tip");
+            password_tip.setAttribute("style", "visibility:visible")
+            return false;
+        }
+        var c_password = document.getElementById("c_password").value;
+        if (c_password !== password) {
+            var c_password_tip = document.getElementById("c_password_tip");
+            c_password_tip.setAttribute("style", "visibility:visible")
+            return false;
+        }
+        return true;
+    }
+
+    function hidden_name_tip() {
+        var name_tip = document.getElementById("name_tip");
+        name_tip.setAttribute("style", "visibility:hidden")
+    }
+
+    function hidden_password_tip() {
+        var password_tip = document.getElementById("password_tip");
+        password_tip.setAttribute("style", "visibility:hidden")
+    }
+
+    function hidden_c_password_tip() {
+        var c_password_tip = document.getElementById("c_password_tip");
+        c_password_tip.setAttribute("style", "visibility:hidden")
+    }
+
+    function hidden_email_tip() {
+        var email_tip = document.getElementById("email_tip");
+        email_tip.setAttribute("style", "visibility:hidden")
+    }
+
+    $(document).ready(function () {
+        //注册
+        $("#submit").click(function () {
+            $("#register_tip").attr("style", "visibility:hidden");
+            if (check_form()) {
+                $.post(
+                    "/user",
+                    $("form").serialize(),
+                    function (data) {
+                        if (data === "success") {
+                            window.location.replace("/home");
+                        } else {
+                            var tip = $("#register_tip");
+                            tip.attr("style", "visibility:visible");
+                            tip.text(data);
+                        }
+                    },
+                    "text"
+                );
+            }
+        });
+        $("#submit").mouseenter(function () {
+            $(this).css('cursor', 'pointer');
+        });
+
+    });
+
+</script>
+</body>
+</html>
