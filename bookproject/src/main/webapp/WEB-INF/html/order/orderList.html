@@ -153,7 +153,7 @@
 
     //发起请求，获取数据
     $.getJSON(
-        "/order",
+        "/book_project/order",
         "action=search_order",
         function (data) {
             show_data(data);
@@ -170,7 +170,7 @@
             let id = $("#input_id").val();
             //发送请求并更新
             $.getJSON(
-                "/order",
+                "/book_project/order",
                 "action=search_order&id=" + id,
                 function (data) {
                     show_data(data);
@@ -186,7 +186,7 @@
         $(document).on("click", ".order", function () {
             let id = $(this).find(":nth-child(1)").text();
             $.get(
-                "/order",
+                "/book_project/order",
                 "action=set_order_id&id=" + id,
                 function (data) {
                     self.location.href = "/orderDetail";
@@ -196,10 +196,10 @@
         $(document).on("click", ".order label", function () {
             let id = $(this).parent().find(":nth-child(1)").text();
             $.get(
-                "/order",
+                "/book_project/order",
                 "action=set_order_id&id=" + id
             );
-            self.location.href = "/orderDetail";
+            self.location.href = "/book_project/orderDetail";
         });
 
     });

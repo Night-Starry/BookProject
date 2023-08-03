@@ -223,7 +223,7 @@
 
     //发起请求获取书籍信息并修改
     $.getJSON(
-        "/book",
+        "/book_project/book",
         "action=getSpecificBook",
         function (data) {
             $("#book_name").attr("value", data.name);
@@ -234,7 +234,7 @@
             $("#book_author").attr("value", data.author);
             $("#book_isbn").text(data.isbn);
             $("#book_img_path").attr("value", data.img);
-            $("#book_img").attr("src", "/img?img_file=" + data.img + "&" + Math.random());
+            $("#book_img").attr("src", "/book_project/img?img_file=" + data.img + "&" + Math.random());
             $("#book_img").attr("path", data.img);
         }
     )
@@ -243,7 +243,7 @@
     $(document).ready(function () {
         //设置点击事件
         $("#back").click(function () {
-            self.location.href = '/bookManage';
+            self.location.href = '/book_project/bookManage';
         });
         $("#load_file").click(function () {
             // var old_file = $("#img_upload").val();
@@ -279,7 +279,7 @@
             // );
             $.ajax({
                     type: "post",
-                    url: "/updateBook",
+                    url: "/book_project/updateBook",
                     data:data ,//上一步的FormData
                     cache: false,//不缓存数据
                     processData: false,//不转换数据
@@ -288,7 +288,7 @@
                     success: function (data) {
                         if(data === "success") {
                             alert("修改成功");
-                            $("#book_img").attr("src", "/img?img_file=" + $("#book_img").attr("path") + "&" + Math.random());
+                            $("#book_img").attr("src", "/book_project/img?img_file=" + $("#book_img").attr("path") + "&" + Math.random());
                         }else {
                             alert("修改失败");
                         }

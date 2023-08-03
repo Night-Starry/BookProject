@@ -83,7 +83,7 @@
 <script>
     //获取数据
     $.getJSON(
-        "/order",
+        "/book_project/order",
         "action=get_specific_order",
         function (data) {
             $("#seq").text(data.id);
@@ -115,7 +115,7 @@
 
     $(document).ready(function () {
         $("#back").click(function () {
-            self.location.href = "/orderList";
+            self.location.href = "/book_project/orderList";
         });
 
     });

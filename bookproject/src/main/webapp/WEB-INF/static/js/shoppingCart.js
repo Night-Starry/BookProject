@@ -5,7 +5,7 @@ function show_data(data) {
         $book.attr("id", data[i].isbn);
         let $img = $("<div class='img'></div>");
         let $img_ = $("<img src='#' alt='书籍图片' class='img' style='height: 100%; width: 100%'>");
-        $img_.attr("src", "/img?img_file=" + data[i].img + "&" + Math.random());
+        $img_.attr("src", "/book_project/img?img_file=" + data[i].img + "&" + Math.random());
         let $info = $("<div class='info'></div>");
         let $isbn = $("<div class='.isbn'></div>");
         let $isbn_label = $("<label style='display: inline'>ISBN: </label>");
@@ -55,7 +55,7 @@ function show_data(data) {
 
 //发起请求，获取数据
 $.getJSON(
-    "/cart",
+    "/book_project/cart",
     "action=get_cart&name=admin",
     function (data) {
         show_data(data);
@@ -113,7 +113,7 @@ function pay() {
 
             //将成功的订单信息返回给服务器
             $.post(
-                "/order",
+                "/book_project/order",
                 order,
                 function (data) {
                     if (data === "success") {
@@ -287,7 +287,7 @@ $(document).ready(function () {
 
         //发送请求
         $.post(
-            "/cart",
+            "/book_project/cart",
             "action=remove_from_cart&user_name=admin&isbn=" + isbn,
         );
 
@@ -315,11 +315,11 @@ $(document).ready(function () {
 
         //发起请求，跳转页面
         $.post(
-            "/book",
+            "/book_project/book",
             "action=set_isbn&isbn=" + isbn,
         );
 
-        self.location.href = "/bookDetail";
+        self.location.href = "/book_project/bookDetail";
     });
 
     $(document).on("mouseenter", ".decrease, .remove, .add", function (e) {

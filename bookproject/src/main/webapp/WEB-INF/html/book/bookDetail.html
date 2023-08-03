@@ -124,10 +124,10 @@
 <script>
     //发起请求获取书籍信息并修改
     $.getJSON(
-        "/book",
+        "/book_project/book",
         "action=getSpecificBook",
         function (data) {
-            $("#book_img").attr("src", "/img?img_file=" + data.img + "&" + Math.random());
+            $("#book_img").attr("src", "/book_project/img?img_file=" + data.img + "&" + Math.random());
             $("#book_name").text(data.name);
             $("#book_isbn").text(data.isbn);
             $("#book_author").text(data.author);
@@ -143,7 +143,7 @@
         $("#add_to_cart").click(function () {
             //发送请求
             $.post(
-                "/cart",
+                "/book_project/cart",
                 "action=add_to_cart&user_name=admin",
                 function (data) {
                     if(data === "success"){
@@ -158,10 +158,10 @@
             );
         });
         $("#back_list").click(function () {
-            self.location.href='/bookList';
+            self.location.href='/book_project/bookList';
         });
         $("#back_cart").click(function () {
-            self.location.href='/shoppingCart';
+            self.location.href='/book_project/shoppingCart';
         });
 
         $(".operation").mouseenter(function (){

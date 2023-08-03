@@ -185,12 +185,12 @@
         var isbn = $(this).parent().parent().find("label").first().text();
         //发送请求
         $.post(
-            "/book",
+            "/book_project/book",
             "action=set_isbn&isbn=" + isbn
         );
 
         //跳转页面
-        self.location.href = "/bookUpdate";
+        self.location.href = "/book_project/bookUpdate";
     }
 
     function delete_book(){
@@ -199,7 +199,7 @@
         let isbn = book.find("label").first().text()
         //发送请求
         $.post(
-            "/book",
+            "/book_project/book",
             "action=del_book&isbn=" + isbn,
             function (data) {
                 if(data === "success"){
@@ -245,7 +245,7 @@
 
     //发起请求，获取数据
     $.getJSON(
-        "/book",
+        "/book_project/book",
         "action=getBookInfo",
         function (data) {
             show_data(data);
@@ -264,7 +264,7 @@
             $(".list").empty();
             //发送请求并更新
             $.post(
-                "/book",
+                "/book_project/book",
                 $("form").serialize(),
                 function (data) {
                     show_data(data);
@@ -274,7 +274,7 @@
         });
         $("#add_book").click(function () {
             //跳转页面
-            self.location.href = "/bookAdd";
+            self.location.href = "/book_project/bookAdd";
         });
 
         //给未来元素绑定点击事件

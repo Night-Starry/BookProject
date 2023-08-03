@@ -30,7 +30,7 @@ public class PermissionFilter implements Filter {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         }else {
             if (name == null) {
-                httpServletResponse.sendRedirect("/login");
+                httpServletResponse.sendRedirect("/book_project/login");
             } else {
                 //用户继续访问
                 filterChain.doFilter(httpServletRequest, httpServletResponse);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>book</title>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <link rel="icon" href="/img?img_file=/WEB-INF/static/img/icon.png" sizes="16x16">
+    <link rel="icon" href="/book_project/img?img_file=/WEB-INF/static/img/icon.png" sizes="16x16">
     <style>
         * {
             padding: 0;
@@ -129,7 +129,7 @@
             </form>
         </div>
         <div class="msg">
-            Already have account. <a href="http://localhost:8080/login">Login</a>
+            Already have account. <a href="/book_project/login">Login</a>
         </div>
     </div>
 </div>
@@ -200,11 +200,11 @@
             $("#register_tip").attr("style", "visibility:hidden");
             if (check_form()) {
                 $.post(
-                    "/user",
+                    "/book_project/user",
                     $("form").serialize(),
                     function (data) {
                         if (data === "success") {
-                            window.location.replace("/home");
+                            window.location.replace("/book_project/home");
                         } else {
                             var tip = $("#register_tip");
                             tip.attr("style", "visibility:visible");

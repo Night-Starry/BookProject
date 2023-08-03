@@ -166,7 +166,7 @@
 
     //发起请求，获取数据
     $.getJSON(
-        "/user",
+        "/book_project/user",
         "action=search_user",
         function (data) {
             show_data(data);
@@ -183,7 +183,7 @@
             let name = $("#input_name").val();
             //发送请求并更新
             $.getJSON(
-                "/user",
+                "/book_project/user",
                 "action=search_user&name=" + name,
                 function (data) {
                     show_data(data);
@@ -197,7 +197,7 @@
             let name = $parent.find("label").first().text();
             //发送请求
             $.post(
-                "user",
+                "/book_project/user",
                 {
                     "action": "del_user",
                     "name": name

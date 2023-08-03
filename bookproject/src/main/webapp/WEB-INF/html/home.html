@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>书城</title>
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <link rel="icon" href="/img?img_file=/WEB-INF/static/img/icon.png">
+    <link rel="icon" href="/book_project/img?img_file=/WEB-INF/static/img/icon.png">
 
     <style>
         * {
@@ -161,7 +161,7 @@
         <header class="header">
             <div class="welcome">
                 <div id="img">
-                    <img src="/img/logo" id="logo" height="100%" width="auto" alt="logo">
+                    <img src="/book_project/img/logo" id="logo" height="100%" width="auto" alt="logo">
                 </div>
                 <div id="word">
                     阅人书店
@@ -170,7 +170,7 @@
             <div class="user">
                 <div id="user_name">***</div>
                 <div id="head_img">
-                    <img src="/img?img_file=WEB-INF/static/img/head.png" alt="头像" height="100%" width="auto">
+                    <img src="/book_project/img?img_file=WEB-INF/static/img/head.png" alt="头像" height="100%" width="auto">
                 </div>
                 <div class="operation" style="visibility: hidden">
                     <div id="logout">退出</div>
@@ -226,7 +226,7 @@
 
         <!--主页面-->
         <div class="main">
-            <iframe src="/welcome" width="100%" height="100%" frameborder="0" id="frame"></iframe>
+            <iframe src="/book_project/welcome" width="100%" height="100%" frameborder="0" id="frame"></iframe>
         </div>
 
     </div>
@@ -237,7 +237,7 @@
 
     //获取
     $.post(
-        "/user",
+        "/book_project/user",
         "action=get_user_name",
         function (data) {
             $("#user_name").text(data);
@@ -265,20 +265,20 @@
         $("#logout").click(function () {
             //返回到登录界面，发送请求给服务器销毁session和cookie
             $.post(
-                "/user",
+                "/book_project/user",
                 {action: "logout", name: $("#user_name").text()},
                 function () {
-                    window.location.href = "/login";
+                    window.location.href = "/book_project/login";
                 }
             );
         });
         $("#signOut").click(function () {
             //注销账号，返回到登录界面，发送请求给服务器销毁用户信息
             $.post(
-                "/user",
+                "/book_project/user",
                 {action: "signOut", name: $("#user_name").text()},
                 function () {
-                    window.location.href = "/login";
+                    window.location.href = "/book_project/login";
                 }
             );
         });
@@ -286,7 +286,7 @@
 
         // 导航条部分设置点击事件
         $("#homepage").click(function (){
-            $("#frame").attr("src", "/welcome");
+            $("#frame").attr("src", "/book_project/welcome");
         });
 
         $("#books").click(function () {
@@ -340,27 +340,27 @@
         });
         
         $("#book_list").click(function () {
-            $("#frame").attr("src", "/bookList");
+            $("#frame").attr("src", "/book_project/bookList");
         });
 
         $("#book_manage").click(function () {
-            $("#frame").attr("src", "/bookManage");
+            $("#frame").attr("src", "/book_project/bookManage");
         });
 
         $("#buy").click(function () {
-            $("#frame").attr("src", "/shoppingCart");
+            $("#frame").attr("src", "/book_project/shoppingCart");
         });
 
 
         $("#user_manage").click(function () {
-            $("#frame").attr("src", "/userManage");
+            $("#frame").attr("src", "/book_project/userManage");
         });
 
         $("#order_list").click(function () {
-            $("#frame").attr("src", "/orderList");
+            $("#frame").attr("src", "/book_project/orderList");
         });
         $("#order_manage").click(function () {
-            $("#frame").attr("src", "/orderManage");
+            $("#frame").attr("src", "/book_project/orderManage");
         });
 
         //设置鼠标变化
