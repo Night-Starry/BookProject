@@ -1,6 +1,8 @@
 # BookProject
  使用servlet构建，适合servlet初学者，逻辑简单。前端部分采用HTML+css+js+jquery。
 
+[点击查看项目详情](http://47.115.214.103:8080/book_project/login)
+
 
 
 ### 技术栈
@@ -81,7 +83,7 @@
 
 ### 项目使用
 
-项目克隆到本地后，配置tomcat，使用maven导入依赖包即可。
+项目克隆到本地后，配置tomcat，使用maven导入依赖包即可。tomcat配置工件时，上下文设置为/book_project
 
 
 
