@@ -5,7 +5,7 @@
   <artifactId>bookproject</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>bookproject Maven Webapp</name>
+  <name>book_project Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
   <dependencies>
@@ -89,7 +89,25 @@
   </dependencies>
 
   <build>
-    <finalName>bookproject</finalName>
+    <finalName>book_project</finalName>
+    <plugins>
+      <!--声明主类,否则打包后无法正确的运行jar-->
+      <plugin>
+
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+
+        <configuration>
+          <!--如果不设置下面的配置将无法打包页面，以及web.xml,造成不能运行-->
+          <!--指定web.xml文件的位置-->
+          <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+          <!--指定jsp等文件所在位置-->
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
+        </configuration>
+
+      </plugin>
+    </plugins>
   </build>
 
   <properties>

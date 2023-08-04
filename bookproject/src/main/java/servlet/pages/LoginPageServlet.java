@@ -21,8 +21,8 @@ public class LoginPageServlet extends HttpServlet {
                     HttpSession session = req.getSession();
                     session.setAttribute("name", cookie.getValue());
                     //用户已经登录过，直接进入首页
-                    resp.sendRedirect("/home");
-                    break;
+                    resp.sendRedirect("/book_project/home");
+                    return;
                 } else {
                     //用户没有登录，进入登录界面
                     file_path = getServletContext().getRealPath("/WEB-INF/html/login.html");
